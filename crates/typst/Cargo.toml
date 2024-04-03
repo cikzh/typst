@@ -12,6 +12,10 @@ repository = { workspace = true }
 license = { workspace = true }
 readme = { workspace = true }
 
+[features]
+default = []
+cbor = ["dep:ciborium"]
+
 [dependencies]
 typst-assets = { workspace = true }
 typst-macros = { workspace = true }
@@ -20,7 +24,7 @@ typst-timing = { workspace = true }
 az = { workspace = true }
 bitflags = { workspace = true }
 chinese-number = { workspace = true }
-ciborium = { workspace = true }
+ciborium = { workspace = true, optional = true }
 comemo = { workspace = true }
 csv = { workspace = true }
 ecow = { workspace = true }

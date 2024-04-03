@@ -1,5 +1,6 @@
 //! Data loading.
 
+#[cfg(feature = "cbor")]
 #[path = "cbor.rs"]
 mod cbor_;
 #[path = "csv.rs"]
@@ -15,6 +16,7 @@ mod xml_;
 #[path = "yaml.rs"]
 mod yaml_;
 
+#[cfg(feature = "cbor")]
 pub use self::cbor_::*;
 pub use self::csv_::*;
 pub use self::json_::*;
@@ -40,6 +42,7 @@ pub(super) fn define(global: &mut Scope) {
     global.define_func::<json>();
     global.define_func::<toml>();
     global.define_func::<yaml>();
+    #[cfg(feature = "cbor")]
     global.define_func::<cbor>();
     global.define_func::<xml>();
 }

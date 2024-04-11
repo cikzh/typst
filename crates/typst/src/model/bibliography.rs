@@ -8,8 +8,12 @@ use std::sync::Arc;
 
 use comemo::Tracked;
 use ecow::{eco_format, EcoString, EcoVec};
+
+#[cfg(feature = "fat")]
 use hayagriva::archive::ArchivedStyle;
+#[cfg(feature = "fat")]
 use hayagriva::io::BibLaTeXError;
+#[cfg(feature = "fat")]
 use hayagriva::{
     citationberg, BibliographyDriver, BibliographyRequest, CitationItem, CitationRequest,
     SpecificLocator,
@@ -419,6 +423,7 @@ impl Hash for Bibliography {
     }
 }
 
+#[cfg(feature = "fat")]
 /// Format a BibLaTeX loading error.
 fn format_biblatex_error(path: &str, src: &str, errors: Vec<BibLaTeXError>) -> EcoString {
     let Some(error) = errors.first() else {
@@ -480,6 +485,7 @@ impl CslStyle {
             .unwrap_or_default()
             .to_lowercase();
 
+        unreachable!("'fat' feature not enabled");
         if ext == "csl" {
             let id = span.resolve_path(string)?;
             let data = engine.world.file(id)?;
@@ -492,6 +498,10 @@ impl CslStyle {
     /// Load a built-in CSL style.
     #[comemo::memoize]
     pub fn from_name(name: &str) -> StrResult<CslStyle> {
+        #[cfg(not(feature = "fat"))]
+        unreachable!("'fat' feature not enabled");
+
+        #[cfg(feature = "fat")]
         match hayagriva::archive::ArchivedStyle::by_name(name).map(ArchivedStyle::get) {
             Some(citationberg::Style::Independent(style)) => Ok(Self {
                 name: Some(name.into()),
@@ -502,14 +512,20 @@ impl CslStyle {
     }
 
     /// Load a CSL style from file contents.
+    //#[cfg(feature = "fat")]
     #[comemo::memoize]
     pub fn from_data(data: &Bytes) -> StrResult<CslStyle> {
         let text = std::str::from_utf8(data.as_slice()).map_err(FileError::from)?;
+        #[cfg(not(feature = "fat"))]
+        unreachable!("'fat' feature not enabled");
+
+        #[cfg(feature = "fat")]
         citationberg::IndependentStyle::from_xml(text)
             .map(|style| Self { name: None, style: Arc::new(LazyHash::new(style)) })
             .map_err(|err| eco_format!("failed to load CSL style ({err})"))
     }
 
+    #[cfg(feature = "fat")]
     /// Get the underlying independent style.
     pub fn get(&self) -> &citationberg::IndependentStyle {
         self.style.as_ref()
@@ -728,6 +744,10 @@ impl<'a> Generator<'a> {
                 Smart::Custom(style) => styles.alloc(style.style),
             };
 
+            #[cfg(not(feature = "fat"))]
+            unreachable!("'fat' feature not enabled");
+
+            #[cfg(feature = "fat")]
             self.infos.push(GroupInfo {
                 location,
                 subinfos,
@@ -736,6 +756,7 @@ impl<'a> Generator<'a> {
                     && style.settings.class == citationberg::StyleClass::Note,
             });
 
+            #[cfg(feature = "fat")]
             driver.citation(CitationRequest::new(
                 items,
                 style,
@@ -935,6 +956,7 @@ impl ElemRenderer<'_> {
         elem: &hayagriva::Elem,
         prefix: &mut Option<Content>,
     ) -> Content {
+        #[cfg(feature = "fat")]
         use citationberg::Display;
 
         let block_level = matches!(elem.display, Some(Display::Block | Display::Indent));
@@ -1007,6 +1029,7 @@ impl ElemRenderer<'_> {
         apply_formatting(content, format)
     }
 
+    #[cfg(feature = "fat")]
     /// Display formatted hayagriva text as content.
     fn display_formatted(&self, formatted: &hayagriva::Formatted) -> Content {
         let content = TextElem::packed(formatted.text.as_str()).spanned(self.span);
@@ -1014,6 +1037,7 @@ impl ElemRenderer<'_> {
     }
 }
 
+#[cfg(feature = "fat")]
 /// Applies formatting to content.
 fn apply_formatting(mut content: Content, format: &hayagriva::Formatting) -> Content {
     match format.font_style {

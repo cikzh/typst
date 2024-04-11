@@ -27,6 +27,7 @@ use crate::model::{
     CiteElem, CiteGroup, DocumentElem, EnumElem, EnumItem, ListElem, ListItem, ParElem,
     ParbreakElem, TermItem, TermsElem,
 };
+
 use crate::syntax::Span;
 use crate::text::{LinebreakElem, SmartQuoteElem, SpaceElem, TextElem};
 

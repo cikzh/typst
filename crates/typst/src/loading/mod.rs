@@ -1,6 +1,6 @@
 //! Data loading.
 
-#[cfg(feature = "cbor")]
+#[cfg(feature = "fat")]
 #[path = "cbor.rs"]
 mod cbor_;
 #[path = "csv.rs"]
@@ -13,16 +13,18 @@ mod read_;
 mod toml_;
 #[path = "xml.rs"]
 mod xml_;
+#[cfg(feature = "fat")]
 #[path = "yaml.rs"]
 mod yaml_;
 
-#[cfg(feature = "cbor")]
+#[cfg(feature = "fat")]
 pub use self::cbor_::*;
 pub use self::csv_::*;
 pub use self::json_::*;
 pub use self::read_::*;
 pub use self::toml_::*;
 pub use self::xml_::*;
+#[cfg(feature = "fat")]
 pub use self::yaml_::*;
 
 use crate::foundations::{cast, category, Bytes, Category, Scope, Str};
@@ -41,8 +43,9 @@ pub(super) fn define(global: &mut Scope) {
     global.define_func::<csv>();
     global.define_func::<json>();
     global.define_func::<toml>();
+    #[cfg(feature = "fat")]
     global.define_func::<yaml>();
-    #[cfg(feature = "cbor")]
+    #[cfg(feature = "fat")]
     global.define_func::<cbor>();
     global.define_func::<xml>();
 }

@@ -9,9 +9,11 @@ use crate::foundations::{
 };
 use crate::introspection::{Counter, Locatable};
 use crate::math::EquationElem;
+
 use crate::model::{
     BibliographyElem, CiteElem, Destination, Figurable, FootnoteElem, Numbering,
 };
+
 use crate::text::TextElem;
 
 /// A reference to a label or bibliography.

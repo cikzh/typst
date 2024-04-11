@@ -607,7 +607,6 @@ description: |
       meaning that `{"hello".len()}` is equivalent to `{str.len("hello")}`
   - Added support for [`import`]($scripting/#modules) renaming with `as`
   - Added a [`duration`] type
-  - Added support for [CBOR]($cbor) encoding and decoding
   - Added encoding and decoding functions from and to bytes for data formats:
     [`json.decode`]($json.decode), [`json.encode`]($json.encode), and similar
     functions for other formats
